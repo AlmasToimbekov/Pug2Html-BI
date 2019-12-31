@@ -27,15 +27,15 @@ public class TagTree {
             if (countSpaces[i] > count) {
                 count = countSpaces[i];
                 parent = currentLevel.get(currentLevel.size() - 1);
-                parent.children.add(new TagLevel(textArr[i], parent));
+                parent.children.add(new TagLevel(textArr[i].trim() + " ", parent));
                 currentLevel = parent.children;
             } else if (countSpaces[i] == count) {
-                currentLevel.add(new TagLevel(textArr[i], parent));
+                currentLevel.add(new TagLevel(textArr[i].trim() + " ", parent));
             } else {
                 parent = parent.parent;
                 currentLevel = parent.children;
                 count = countSpaces[i];
-                currentLevel.add(new TagLevel(textArr[i], parent));
+                currentLevel.add(new TagLevel(textArr[i].trim() + " ", parent));
             }
         }
     }
