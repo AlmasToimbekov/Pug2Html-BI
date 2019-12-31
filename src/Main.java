@@ -8,15 +8,22 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public class Main {
 
     public static void main(String[] args) {
+        String[] textArr = getFileTextArr("./file.txt");
+        TagTree tagTree = new TagTree(textArr);
+    }
+
+    static String[] getFileTextArr(String path) {
+        String fileText;
+        String[] textArr;
+
         try {
-            String result = Main.readFile("./file.txt", US_ASCII);
-            String[] array = result.split("[\\r?\\n]+");
-            for (String str: array) {
-                System.out.println(str);
-            }
+            fileText = Main.readFile(path, US_ASCII);
+            textArr = fileText.split("[\\r?\\n]+");
+            return textArr;
         } catch (IOException error) {
             System.out.println(error.toString());
         }
+        return null;
     }
 
     static String readFile(String path, Charset encoding)
