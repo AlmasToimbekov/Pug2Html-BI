@@ -1,0 +1,14 @@
+doctype html
+html(lang='en')
+    head
+        title Pug
+    body
+        h1 Pug Examples
+        div.container
+            p Cool Pug example!
+
+closeAndNL
+parOpen(
+  class1='one' class2='two'
+  emptyClass) parClosePrev
+  div classAsText='text<<'
