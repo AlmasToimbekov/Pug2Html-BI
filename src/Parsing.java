@@ -1,9 +1,9 @@
 import java.util.List;
 
 public class Parsing {
-    static void inOrderTraverse(List<TagLevel> tagLevels, StringBuilder sb) {
+    static void inOrderTraverse(List<Tag> tagLevels, StringBuilder sb) {
         for (int i = 0; i < tagLevels.size(); i++) {
-            TagLevel currentTag = tagLevels.get(i);
+            Tag currentTag = tagLevels.get(i);
             String tag = currentTag.body;
             String rest = "";
             if (!openedParenth) {
@@ -26,8 +26,13 @@ public class Parsing {
             parseAttributes(tag, sb);
         } else {
             sb.append('<');
-            if (tag.equals("doctype")) sb.append("!DOCTYPE");
-            else sb.append(tag);
+            if (tag.equals("doctype")) {
+                sb.append("!DOCTYPE");
+                sb.append(rest, 0, rest.length() - 1);
+                sb.append(">");
+                return;
+            }
+            sb.append(tag);
             if (rest.equals(" ")) sb.append(">\n");
             else if (rest.charAt(0) == '(') {
                 openedParenth = true;
@@ -35,12 +40,13 @@ public class Parsing {
                 parseAttributes(rest.substring(1), sb);
             } else {
                 sb.append('>');
-                sb.append(rest, 0, rest.length() - 1);
+                sb.append(rest, 1, rest.length() - 1);
             }
         }
     }
 
     static void parseAttributes(String tag, StringBuilder sb) {
+        if (tag.equals(" ")) return;
         for (int i = 0; i < tag.length(); i++) {
             if (tag.charAt(i) == '(') System.out.println("Unexpected text '(");
             else if (tag.charAt(i) == '\'') sb.append('"');

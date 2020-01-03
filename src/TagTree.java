@@ -3,7 +3,7 @@ import java.util.List;
 
 public class TagTree {
 
-    List<TagLevel> tagsTree;
+    List<Tag> tagsTree;
 
     TagTree(String[] textArr) {
         tagsTree = new ArrayList<>();
@@ -20,23 +20,19 @@ public class TagTree {
             countSpaces[i] = count;
         }
 
-        List<TagLevel> currentLevel = tagsTree;
+        List<Tag> currentLevel = tagsTree;
         count = countSpaces[0];
-        TagLevel parent = null;
+        Tag parent = null;
         for (int i = 0; i < rows; i++) {
             if (countSpaces[i] > count) {
-                count = countSpaces[i];
                 parent = currentLevel.get(currentLevel.size() - 1);
-                parent.children.add(new TagLevel(textArr[i].trim() + " ", parent));
                 currentLevel = parent.children;
-            } else if (countSpaces[i] == count) {
-                currentLevel.add(new TagLevel(textArr[i].trim() + " ", parent));
-            } else {
-                parent = parent.parent;
-                currentLevel = parent.children;
-                count = countSpaces[i];
-                currentLevel.add(new TagLevel(textArr[i].trim() + " ", parent));
+            } else if (countSpaces[i] < count) {
+                while (parent != null && parent.level >= countSpaces[i]) parent = parent.parent;
+                currentLevel = parent == null ? tagsTree : parent.children;
             }
+            count = countSpaces[i];
+            currentLevel.add(new Tag(textArr[i].trim() + " ", parent, countSpaces[i]));
         }
     }
 }
