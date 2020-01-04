@@ -11,16 +11,18 @@ public class Parsing {
                 tag = currentTag.body.substring(0, delimiter);
                 rest = currentTag.body.substring(delimiter);
             }
-
+            currentTag.selfClosing = isSelfClosing(tag);
+            if (!selfClosing) selfClosing = currentTag.selfClosing;
             parseOpeningTags(sb, tag, rest);
 
             inOrderTraverse(tagLevels.get(i).children, sb);
 
-            if (!openedParenth && !rest.equals("")) parseClosingTags(sb, tag);
+            if (!openedParenth && !rest.equals("") && !currentTag.selfClosing) parseClosingTags(sb, tag);
         }
     }
 
-    static boolean openedParenth = false;
+    private static boolean openedParenth = false;
+    private static boolean selfClosing = false;
     static void parseOpeningTags(StringBuilder sb, String tag, String rest) {
         if (openedParenth) {
             parseAttributes(tag, sb);
@@ -33,7 +35,10 @@ public class Parsing {
                 return;
             }
             sb.append(tag);
-            if (rest.equals(" ")) sb.append(">\n");
+            if (rest.equals(" ")) {
+                if (selfClosing) sb.append(" /");
+                sb.append(">\n");
+            }
             else if (rest.charAt(0) == '(') {
                 openedParenth = true;
                 sb.append(' ');
@@ -52,9 +57,15 @@ public class Parsing {
             else if (tag.charAt(i) == '\'') sb.append('"');
             else if (tag.charAt(i) == ')') {
                 openedParenth = false;
+                String rest = tag.substring(i + 1);
+                if (selfClosing) {
+                    sb.append(" />\n");
+                    if (!rest.equals(" ")) System.out.println("Unexpected text after self closing tag");
+                    selfClosing = false;
+                    return;
+                }
                 sb.append('>');
 
-                String rest = tag.substring(i + 1);
                 if (rest.charAt(0) != ' ') System.out.println("Unexpected text '" + rest.charAt(0) + "'");
                 sb.append(' ');
                 sb.append(rest.substring(1));
@@ -82,5 +93,28 @@ public class Parsing {
             count++;
         }
         return count;
+    }
+
+    static boolean isSelfClosing(String tag) {
+        switch (tag) {
+            case "area":
+            case "base":
+            case "br":
+            case "col":
+            case "embed":
+            case "hr":
+            case "img":
+            case "input":
+            case "link":
+            case "meta":
+            case "param":
+            case "source":
+            case "track":
+            case "wbr":
+            case "command":
+            case "keygen":
+            case "menuitem": return true;
+            default: return false;
+        }
     }
 }

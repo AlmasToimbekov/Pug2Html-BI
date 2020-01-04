@@ -6,6 +6,7 @@ public class Tag {
     List<Tag> children;
     Tag parent;
     int level;
+    boolean selfClosing;
 
     Tag(String body, Tag parent, int level) {
         this.body = body;

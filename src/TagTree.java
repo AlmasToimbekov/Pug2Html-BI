@@ -23,6 +23,7 @@ public class TagTree {
         List<Tag> currentLevel = tagsTree;
         count = countSpaces[0];
         Tag parent = null;
+        Tag prev = null;
         for (int i = 0; i < rows; i++) {
             if (countSpaces[i] > count) {
                 parent = currentLevel.get(currentLevel.size() - 1);
@@ -32,7 +33,16 @@ public class TagTree {
                 currentLevel = parent == null ? tagsTree : parent.children;
             }
             count = countSpaces[i];
-            currentLevel.add(new Tag(textArr[i].trim() + " ", parent, countSpaces[i]));
+            if (textArr[i].trim().startsWith(")")) {
+                prev.body += textArr[i].trim() + " ";
+                // Mark deleted line
+                countSpaces[i] = -1;
+            }
+            else {
+                Tag newTag = new Tag(textArr[i].trim() + " ", parent, countSpaces[i]);
+                currentLevel.add(newTag);
+                prev = newTag;
+            }
         }
     }
 }
