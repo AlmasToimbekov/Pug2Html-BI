@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class FileInteraction {
     static String[] getFileTextArr(String path) {
@@ -12,8 +12,8 @@ public class FileInteraction {
         String[] textArr;
 
         try {
-            fileText = readFile(path, US_ASCII);
-            textArr = fileText.split("[\\r?\\n]+");
+            fileText = readFile(path, UTF_8);
+            textArr = fileText.split("[\\r?\\n]");
             return textArr;
         } catch (IOException error) {
             System.out.println(error.toString());

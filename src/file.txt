@@ -4,11 +4,14 @@ html(lang='en')
         title Pug
     body
         h1 Pug Examples
-        div.container
-            p Cool Pug example!
+        input(
+          type='checkbox'
+          name='agreement'
+          checked
+        )
 
-closeAndNL
-parOpen(
+userTag
+div(
   class1='one' class2='two'
   emptyClass) parClosePrev
-  div classAsText='text<<'
+  img

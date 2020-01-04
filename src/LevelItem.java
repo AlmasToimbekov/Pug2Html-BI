@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tag {
+public class LevelItem {
     String body;
-    List<Tag> children;
-    Tag parent;
+    List<LevelItem> children;
+    LevelItem parent;
     int level;
     boolean selfClosing;
+    boolean levelUp;
 
-    Tag(String body, Tag parent, int level) {
+    LevelItem(String body, LevelItem parent, int level) {
         this.body = body;
         this.parent = parent;
         this.level = level;

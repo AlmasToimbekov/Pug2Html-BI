@@ -1,8 +1,17 @@
-doctype html  
-html(lang='en')  
+doctype html
+html(lang='en')
     head
         title Pug
     body
         h1 Pug Examples
-        div.container
-            p Cool Pug example!
+        input(
+          type='checkbox'
+          name='agreement'
+          checked
+        )
+
+userTag
+div(
+  class1='one' class2='two'
+  emptyClass) parClosePrev
+  img

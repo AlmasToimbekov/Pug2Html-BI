@@ -1,28 +1,35 @@
 import java.util.List;
 
 public class Parsing {
-    static void inOrderTraverse(List<Tag> tagLevels, StringBuilder sb) {
+    static void inOrderTraverse(List<LevelItem> tagLevels, StringBuilder sb) {
         for (int i = 0; i < tagLevels.size(); i++) {
-            Tag currentTag = tagLevels.get(i);
-            String tag = currentTag.body;
+            currentLine++;
+            LevelItem currentItem = tagLevels.get(i);
+            if (currentItem.levelUp) currentLine++;
+            if (tagLevels.get(i).body.trim().length() == 0) {
+                sb.append('\n');
+                continue;
+            }
+            String tag = currentItem.body;
             String rest = "";
             if (!openedParenth) {
-                int delimiter = getFirstWordDelim(currentTag.body);
-                tag = currentTag.body.substring(0, delimiter);
-                rest = currentTag.body.substring(delimiter);
+                int delimiter = getFirstWordDelim(currentItem.body);
+                tag = currentItem.body.substring(0, delimiter);
+                rest = currentItem.body.substring(delimiter);
             }
-            currentTag.selfClosing = isSelfClosing(tag);
-            if (!selfClosing) selfClosing = currentTag.selfClosing;
+            currentItem.selfClosing = isSelfClosing(tag);
+            if (!selfClosing) selfClosing = currentItem.selfClosing;
             parseOpeningTags(sb, tag, rest);
 
             inOrderTraverse(tagLevels.get(i).children, sb);
 
-            if (!openedParenth && !rest.equals("") && !currentTag.selfClosing) parseClosingTags(sb, tag);
+            if (!openedParenth && !rest.equals("") && !currentItem.selfClosing) parseClosingTags(sb, tag);
         }
     }
 
     private static boolean openedParenth = false;
     private static boolean selfClosing = false;
+    private static int currentLine = 0;
     static void parseOpeningTags(StringBuilder sb, String tag, String rest) {
         if (openedParenth) {
             parseAttributes(tag, sb);
@@ -53,20 +60,20 @@ public class Parsing {
     static void parseAttributes(String tag, StringBuilder sb) {
         if (tag.equals(" ")) return;
         for (int i = 0; i < tag.length(); i++) {
-            if (tag.charAt(i) == '(') System.out.println("Unexpected text '(");
+            if (tag.charAt(i) == '(') System.out.println("Unexpected text '(' on line " + currentLine);
             else if (tag.charAt(i) == '\'') sb.append('"');
             else if (tag.charAt(i) == ')') {
                 openedParenth = false;
                 String rest = tag.substring(i + 1);
                 if (selfClosing) {
                     sb.append(" />\n");
-                    if (!rest.equals(" ")) System.out.println("Unexpected text after self closing tag");
+                    if (!rest.equals(" ")) System.out.println("Unexpected text after self closing tag on line " + currentLine);
                     selfClosing = false;
                     return;
                 }
                 sb.append('>');
 
-                if (rest.charAt(0) != ' ') System.out.println("Unexpected text '" + rest.charAt(0) + "'");
+                if (rest.charAt(0) != ' ') System.out.println("Unexpected text '" + rest.charAt(0) + "'" + " on line " + currentLine);
                 sb.append(' ');
                 sb.append(rest.substring(1));
                 sb.append('\n');
